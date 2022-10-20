@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h1>My First Heading</h1>
+
+    <p>My first paragraph.</p>
+    <p id="demo">My first paragraph.</p>
+
+    <div id="container">
+
+    </div>
+
+</body>
+<script>
+    document.getElementById("demo").innerHTML = "Hello JavaScript!";
+
+    function getListColor(max) {
+        let tab = [];
+        let decoupeLuminance = 3;
+        const n = Math.ceil(360 / max);
+
+        for (let i = 0; i < decoupeLuminance; i++) {
+            let luminance = '';
+            if (i === 0) {
+                luminance = '30%';
+            } else if (i === 1) {
+                luminance = '40%';
+            } else {
+                luminance = '50%';
+            }
+            let no = 0;
+            for (let j = 0; j < Math.ceil(max / decoupeLuminance); j++) {
+                tab.push('hsl(' + (n * j) + ',' + luminance + ',40%)');
+            }
+        }
+        return tab;
+    }
+
+    function num(nb) {
+        let divRoot = document.getElementById("container");
+        for (let i = 0; i < 10; i++) {
+            let tag = document.createElement("div");
+            var text = document.createTextNode("A");
+            tag.appendChild(text);
+            tag.style.backgroundColor='red';
+            divRoot.appendChild(tag);
+        }
+    }
+
+    console.log('test1');
+    num(10);
+    console.log('test2');
+
+</script>
+
+</html>
