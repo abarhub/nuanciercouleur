@@ -8,23 +8,42 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-          }
+        }
 
-          .box {
+        .box {
             min-width: 50px;
             min-height: 50px;
-          }
-
-        </style>
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 
 </head>
 
-<body>
+<body onload="setup()">
 
-    <h1>My First Heading</h1>
+    <h1>Nuancier de couleur</h1>
 
-    <p>My first paragraph.</p>
-    <p id="demo">My first paragraph.</p>
+    <form>
+        <div>
+            <div>
+                <label for="nbCases">Nombre de cases</label>
+                <input type="number" name="nbCases" value="10">
+            </div>
+            <div>
+                <label for="nbSaturation">Nombre de saturation</label>
+                <input type="number" name="nbSaturation" value="-1" min="-1" max="10">
+            </div>
+            <div>
+                <label for="nbLuminance">Nombre de luminance</label>
+                <input type="number" name="nbLuminance" value="-1" min="-1" max="10">
+            </div>
+            <div>
+                <button onclick="miseAJour()" type="button">Mise à jour</button>
+            </div>
+        </div>
+    </form>
 
     <div id="container" class="container">
 
@@ -32,82 +51,123 @@
 
 </body>
 <script>
-    document.getElementById("demo").innerHTML = "Hello JavaScript!";
 
-    function getNo(min,max,no, nbElements){
-        let res= min+((max-min)/nbElements)*(no+1);
-        console.log('getNo',res,min,max,no, nbElements);
+    function getNo(min, max, no, nbElements) {
+        const res = min + ((max - min) / nbElements) * (no + 1);
+        console.log('getNo', res, min, max, no, nbElements);
         return res;
     }
 
-    function getListColor(max) {
+    function getListColor(max0, nbSaturation, nbLuminance) {
+        const max = max0;
         let tab = [];
         let decoupeSaturation = 5;
         let decoupeLuminance = 5;
         const n = Math.ceil(360 / max);
 
-        if(max<20){
-            decoupeSaturation = 1;
-        } else if(max<50){
-            decoupeSaturation = 2;
+        if (nbSaturation > 0) {
+            decoupeSaturation = nbSaturation;
         } else {
-            decoupeSaturation = 3;
+            if (max < 20) {
+                decoupeSaturation = 1;
+            } else if (max < 50) {
+                decoupeSaturation = 2;
+            } else {
+                decoupeSaturation = 3;
+            }
+        }
+        if (nbLuminance > 0) {
+            decoupeLuminance = nbLuminance;
+        } else {
+            if (max > 50) {
+                if (max < 60) {
+                    decoupeLuminance = 1;
+                } else if (max < 70) {
+                    decoupeLuminance = 2;
+                } else {
+                    decoupeLuminance = 3;
+                }
+            } else {
+                decoupeLuminance = 1;
+            }
         }
 
-        let tab2=[];
-        for(let i=0;i<decoupeSaturation;i++){
-            for(let j=0;j<decoupeLuminance;j++){
-                tab2.push([i,j]);
+        let tab2 = [];
+        for (let i = 0; i < decoupeSaturation; i++) {
+            for (let j = 0; j < decoupeLuminance; j++) {
+                tab2.push([i, j]);
             }
         }
 
         for (let i = 0; i < tab2.length; i++) {
             let saturation = '';
             let luminance = '';
-            let saturationNo=tab2[i][0];
-            let luminanceNo=tab2[i][1];
-            saturation=getNo(30,90,saturationNo,decoupeSaturation)+'%';
-            luminance=getNo(30,90,luminanceNo,decoupeLuminance)+'%';
-            /*if (saturationNo === 0) {
-                saturation = '30%';
-            } else if (saturationNo === 1) {
-                saturation = '50%';
-            } else {
-                saturation = '70%';
-            }
-            if (luminanceNo === 0) {
-                luminance = '30%';
-            } else if (luminanceNo === 1) {
-                luminance = '50%';
-            } else {
-                luminance = '70%';
-            }*/
-            console.log('i=',i,'saturation='+saturation,'luminance=',luminance);
+            let saturationNo = tab2[i][0];
+            let luminanceNo = tab2[i][1];
+            saturation = getNo(30, 90, saturationNo, decoupeSaturation) + '%';
+            luminance = getNo(30, 90, luminanceNo, decoupeLuminance) + '%';
+            console.log('i=', i, 'saturation=' + saturation, 'luminance=', luminance);
             let no = 0;
             for (let j = 0; j < Math.ceil(max); j++) {
-                tab.push('hsl(' + (n * j) + ',' + saturation + ','+luminance+')');
+                tab.push('hsl(' + (n * j) + ',' + saturation + ',' + luminance + ')');
             }
         }
         return tab;
     }
 
-    function num(nb) {
-        let tabColor=getListColor(nb);
-        let divRoot = document.getElementById("container");
-        for (let i = 0; i < nb; i++) {
-            let tag = document.createElement("div");
-            var text = document.createTextNode("A");
+    function num(nb, nbSaturation, nbLuminance) {
+        console.log('num nb', nb);
+        const nb0 = nb;
+        const tabColor = getListColor(nb0, nbSaturation, nbLuminance);
+        const divRoot = document.getElementById("container");
+        divRoot.innerHTML = "";
+        for (let i = 0; i < nb0; i++) {
+            const tag = document.createElement("div");
+            const text = document.createTextNode("A");
             tag.classList.add("box");
             tag.appendChild(text);
-            //tag.style.backgroundColor='red';
-            tag.style.backgroundColor=tabColor[i];
+            tag.style.backgroundColor = tabColor[i];
             divRoot.appendChild(tag);
+        }
+        console.log('num nb fin', nb0);
+    }
+
+    function getFieldValue(name) {
+        let value = 0;
+        const eltNbCases = document.getElementsByName(name);
+        if (eltNbCases && eltNbCases.length > 0) {
+            const s = eltNbCases[0];
+            if (s && s.value) {
+                const s2 = s.value;
+                if (s2 && s2.length > 0) {
+                    value = parseInt(s2);
+                }
+            }
+
+        }
+        return value;
+    }
+
+    function miseAJour() {
+        console.log('miseAJour');
+        const nbCases = getFieldValue('nbCases');
+        const nbSaturation = getFieldValue('nbSaturation');
+        const nbLuminance = getFieldValue('nbLuminance');
+        console.log('nb', nbCases);
+        if (nbCases > 0) {
+            num(nbCases, nbSaturation, nbLuminance);
         }
     }
 
-    console.log('test1');
-    num(100);
-    console.log('test2');
+    function setup() {
+        console.log('setup');
+        miseAJour();
+    }
+
+    //console.log('test1');
+    //num(100);
+    //console.log('test2');
+    //miseAJour();
 
 </script>
 
