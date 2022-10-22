@@ -54,7 +54,6 @@
 
     function getNo(min, max, no, nbElements) {
         const res = min + ((max - min) / nbElements) * (no + 1);
-        console.log('getNo', res, min, max, no, nbElements);
         return res;
     }
 
@@ -106,7 +105,6 @@
             let luminanceNo = tab2[i][1];
             saturation = getNo(30, 90, saturationNo, decoupeSaturation) + '%';
             luminance = getNo(30, 90, luminanceNo, decoupeLuminance) + '%';
-            console.log('i=', i, 'saturation=' + saturation, 'luminance=', luminance);
             let no = 0;
             for (let j = 0; j < Math.ceil(max); j++) {
                 tab.push('hsl(' + (n * j) + ',' + saturation + ',' + luminance + ')');
@@ -116,7 +114,6 @@
     }
 
     function num(nb, nbSaturation, nbLuminance) {
-        console.log('num nb', nb);
         const nb0 = nb;
         const tabColor = getListColor(nb0, nbSaturation, nbLuminance);
         const divRoot = document.getElementById("container");
@@ -129,7 +126,6 @@
             tag.style.backgroundColor = tabColor[i];
             divRoot.appendChild(tag);
         }
-        console.log('num nb fin', nb0);
     }
 
     function getFieldValue(name) {
@@ -149,25 +145,17 @@
     }
 
     function miseAJour() {
-        console.log('miseAJour');
         const nbCases = getFieldValue('nbCases');
         const nbSaturation = getFieldValue('nbSaturation');
         const nbLuminance = getFieldValue('nbLuminance');
-        console.log('nb', nbCases);
         if (nbCases > 0) {
             num(nbCases, nbSaturation, nbLuminance);
         }
     }
 
     function setup() {
-        console.log('setup');
         miseAJour();
     }
-
-    //console.log('test1');
-    //num(100);
-    //console.log('test2');
-    //miseAJour();
 
 </script>
 
